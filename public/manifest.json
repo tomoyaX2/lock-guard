@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Lock Guard",
+  "version": "1.1.0",
+  "description": "Closes fake \"your computer is locked\" scam pages served from blob: URLs, and warns about the steps that follow them.",
+  "minimum_chrome_version": "134",
+  "permissions": ["tabs", "scripting", "storage", "history", "downloads", "webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Lock Guard: click to close a blob: page that will not let you leave"
+  },
+  "commands": {
+    "close-trapped-page": {
+      "suggested_key": { "default": "Alt+Shift+L" },
+      "description": "Close a page that will not let you leave"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "match_origin_as_fallback": true,
+      "all_frames": false,
+      "run_at": "document_start",
+      "world": "MAIN",
+      "js": ["shield.js"]
+    },
+    {
+      "matches": ["<all_urls>"],
+      "match_origin_as_fallback": true,
+      "all_frames": false,
+      "run_at": "document_start",
+      "js": ["content.js"]
+    }
+  ]
+}

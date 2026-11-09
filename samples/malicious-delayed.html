@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+  Fixture, not a real attack: looks harmless, then becomes a lock screen after 15 s (?delay=3
+  for 3 s), to beat one-shot detection. The phone number is fictional (555 exchange).
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading...</title>
+  </head>
+  <body>
+    <script>
+      const delaySeconds = Number(new URLSearchParams(location.search).get('delay')) || 15;
+
+      const pageHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Document viewer</title>
+          <style>
+            html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+            body { display: flex; align-items: center; justify-content: center; }
+            body.locked { background: #002bff; color: white; text-align: center; }
+            .phone { font-size: 32px; font-weight: bold; color: #ffdd00; margin: 24px 0; }
+          </style>
+        </head>
+        <body>
+          <p id="status">Preparing your document. This can take a moment.</p>
+          <script>
+            const showLockScreen = () => {
+              document.title = 'Windows Defender Alert';
+              document.body.className = 'locked';
+              const box = document.createElement('div');
+              const lines = [
+                ['h1', 'Access to this computer has been blocked'],
+                ['p', 'A trojan was detected. Your files may be at risk. Do not turn off your PC.'],
+                ['p', 'Call Windows Support toll free:'],
+                ['div', '1-888-555-0177'],
+              ];
+              for (const [tag, text] of lines) {
+                const element = document.createElement(tag);
+                element.textContent = text;
+                if (tag === 'div') { element.className = 'phone'; }
+                box.append(element);
+              }
+              document.body.replaceChildren(box);
+
+              document.addEventListener('contextmenu', (e) => e.preventDefault());
+              document.addEventListener('keydown', (e) => {
+                const blocked = ['F5', 'F11', 'F12', 'Escape'];
+                if (blocked.includes(e.key) || (e.ctrlKey && ['r', 'w', 'l'].includes(e.key.toLowerCase()))) {
+                  e.preventDefault();
+                }
+              });
+              window.addEventListener('beforeunload', (e) => {
+                e.preventDefault();
+                e.returnValue = '';
+              });
+            };
+            setTimeout(showLockScreen, ${delaySeconds} * 1000);
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([pageHtml], { type: 'text/html' });
+      window.location.href = URL.createObjectURL(blob);
+    </script>
+  </body>
+</html>

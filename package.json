@@ -1,0 +1,35 @@
+{
+  "name": "lock-guard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chrome MV3 extension that detects and closes blob-URL lock-screen scam pages.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "serve": "node scripts/serve-tests.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "node --test \"test/*.test.ts\"",
+    "e2e": "npm run build && node --test --test-concurrency=1 --test-timeout=90000 \"e2e/*.e2e.ts\"",
+    "measure": "npm run build && node e2e/load-cost.ts",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/chrome": "0.3.7",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "puppeteer": "25.16.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1"
+  }
+}

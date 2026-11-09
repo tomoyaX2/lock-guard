@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  Must stay open: a mail view showing a scam message (fictional 555 number) that guards an
+  unsaved reply and has its own right-click menu. Closing it would lose the user's reply.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mail</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mail</h1>
+    <p>Open the message in its own window to read and reply.</p>
+    <button id="open-message">Open message</button>
+
+    <script>
+      document.getElementById('open-message').addEventListener('click', () => {
+        const messageHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8" />
+            <title>Message: Windows Security Alert</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; max-width: 640px; }
+              blockquote { border-left: 4px solid #ccc; margin: 16px 0; padding: 8px 16px; }
+              textarea { width: 100%; height: 120px; }
+              #menu { position: fixed; display: none; border: 1px solid #999; background: #fff; padding: 8px; }
+            </style>
+          </head>
+          <body>
+            <h1>Message from unknown sender</h1>
+            <blockquote>
+              <p><strong>Windows Security Alert</strong></p>
+              <p>
+                Your computer has been locked. Unusual activity has been detected.
+                Do not restart your computer. Call Microsoft Support immediately on
+                1-800-555-0123 and quote error code 0x80070057.
+              </p>
+            </blockquote>
+            <h2>Your reply</h2>
+            <textarea id="reply">This looks like a scam, I will report it.</textarea>
+            <div id="menu">Mark as spam</div>
+            <script>
+              window.addEventListener('beforeunload', (e) => {
+                if (document.getElementById('reply').value.trim() !== '') {
+                  e.preventDefault();
+                  e.returnValue = '';
+                }
+              });
+              const menu = document.getElementById('menu');
+              document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                menu.style.left = e.clientX + 'px';
+                menu.style.top = e.clientY + 'px';
+                menu.style.display = 'block';
+              });
+              document.addEventListener('click', () => { menu.style.display = 'none'; });
+            <\/script>
+          </body>
+          </html>
+        `;
+        const blob = new Blob([messageHtml], { type: 'text/html' });
+        window.open(URL.createObjectURL(blob), '_blank');
+      });
+    </script>
+  </body>
+</html>

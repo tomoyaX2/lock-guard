@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+  Must work normally: a harmless blob: slideshow with a full-screen button. Lock Guard notes
+  the request and lets it through, so the deck goes full screen and stays open.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Slides</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Slides</h1>
+    <p>Open the deck in its own window.</p>
+    <button id="open-deck">Open deck</button>
+
+    <script>
+      document.getElementById('open-deck').addEventListener('click', () => {
+        const deckHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8" />
+            <title>Quarterly review</title>
+            <style>body { font-family: Arial, sans-serif; margin: 40px; }</style>
+          </head>
+          <body>
+            <h1>Quarterly review</h1>
+            <p>Slide 1 of 12: revenue grew 8% over the previous quarter.</p>
+            <button id="fullscreen">Full screen</button>
+            <p>Full screen: <span id="status">off</span></p>
+            <script>
+              const status = document.getElementById('status');
+              document.getElementById('fullscreen').addEventListener('click', async () => {
+                try {
+                  await document.documentElement.requestFullscreen();
+                  status.textContent = 'on';
+                } catch {
+                  status.textContent = 'refused';
+                }
+              });
+            <\/script>
+          </body>
+          </html>
+        `;
+        const blob = new Blob([deckHtml], { type: 'text/html' });
+        window.open(URL.createObjectURL(blob), '_blank');
+      });
+    </script>
+  </body>
+</html>

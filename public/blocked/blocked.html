@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lock Guard</title>
+    <link rel="stylesheet" href="blocked.css" />
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Lock Guard</p>
+      <h1 id="title">A scam page was closed</h1>
+      <p id="lead" class="lead">
+        The page was imitating a system lock screen. Your computer is not locked and nothing on it
+        was changed.
+      </p>
+      <p><strong id="advice">Do not call any phone number that page showed.</strong></p>
+
+      <p id="still-open" class="notice" hidden>
+        Its tab could not be closed automatically. Switch to it and choose
+        <strong>Leave</strong> when the browser asks.
+      </p>
+
+      <section aria-labelledby="reasons-heading">
+        <h2 id="reasons-heading">Why it was closed</h2>
+        <ul id="reasons">
+          <li>No details are available for this tab.</li>
+        </ul>
+      </section>
+
+      <p id="summary" class="meta"></p>
+      <div class="actions">
+        <button id="close" type="button">Close this tab</button>
+        <button id="remove" type="button" class="secondary" hidden>Delete the file</button>
+        <button id="continue" type="button" class="secondary" hidden disabled></button>
+      </div>
+      <p class="meta">
+        If a page ever will not let you leave, press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd>.
+        The page cannot block those keys. If the browser then asks, choose <strong>Leave</strong>.
+      </p>
+    </main>
+    <script src="blocked.js"></script>
+  </body>
+</html>

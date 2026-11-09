@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node", "chrome"]
+  },
+  "include": ["test/**/*.ts", "scripts/**/*.ts", "e2e/**/*.ts"]
+}

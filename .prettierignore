@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+dist
+
+# Provided with the assignment; kept byte-identical.
+ASSIGNMENT.md
+malicious.html
+benign.html
